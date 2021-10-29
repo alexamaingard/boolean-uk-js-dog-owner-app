@@ -1,28 +1,5 @@
-/*
-- Each list item should be clickable. When you click on an item, the 
-selected dog should display on the main card
-- The main card should contain all the information from the selected dog. 
-Follow the template for the main card that you'll find on the HTML file.
-- There should be only one card at the time on the screen
-- The card should have a button that toggles for the selected dog between 
-good dog/ bad dog
-
-Tips
-- Take advantage of scope in JS to have access to the data you need
-- Remember you can add event listeners to any element on the page
-
-Challenge
-You might have noticed there's a plus button at the beginning of the top 
-row. Add the behaviour to it. When clicked, it should replace the main card 
-with a form to add a new dog to the list. 
-You'll find a template for the form on the HTML page. Once the form is 
-submitted, add the new dog to the beginning of the list, right next to 
-the plus button.
-*/
-
 console.log(data);
 
-// WRITE YOUR CODE BELOW!
 function createElement(tag) {
     const element = document.createElement(tag);
     return element;
@@ -34,16 +11,14 @@ function createElementWithText(tag, text) {
     return element;
 }
 
-const addDogButton = document.querySelector('.dogs-list__button--add');
-
 const dogListContainer = document.querySelector('.dogs-list');
 dogListContainer.className = 'dogs-list';
 
-function createDogListItem(parentElement, dogs){
+function createDogListItem(dogs){
     const dog = createElementWithText('li', dogs.name);
     dog.className = 'dogs-list__button';
     dog.id = dogs.id;
-    parentElement.append(dog);
+    return dog;
 }
 
 const dogsMainSection = document.querySelector('.main__dog-section');
@@ -75,10 +50,8 @@ function dogBehaviour(parentElement, dog){
     const italicText = createElementWithText('em', 'Is naughty? ');
     const goodDogButton = createElement('button');
     goodDogButton.id = 'toggle';
-
     const isNaughty = checkIfGoodDog(dog, goodDogButton);
     naughtyDog.append(italicText, isNaughty);
-
     parentElement.append(naughtyDog, goodDogButton);
 }
 
@@ -103,25 +76,104 @@ function displayDogCard(dog){
     createDogCard(dogsMainSection, dog);
 }
 
-/*
-function displayAddDogForm(){
-
+function createLabel (parentElement, inputLabel, labelFor){
+    const label = createElementWithText('label', inputLabel);
+    label.setAttribute('for', labelFor);
+    parentElement.append(label);
 }
-*/
+
+function createInput(parentElement, labelFor, inputType){
+    const input = createElement('input');
+    input.setAttribute('type', inputType);
+    input.id = labelFor;
+    input.setAttribute('name', labelFor);
+    parentElement.append(input);
+    return input;
+}
+
+function addDogElementToForm(parentElement, inputLabel, labelFor, inputType){
+    createLabel(parentElement, inputLabel, labelFor);
+    createInput(parentElement, labelFor, inputType);
+}
+
+function addTextAreaElementToForm(parentElement, inputLabel, labelFor, rows){
+    const label = createElementWithText('label', inputLabel);
+    label.setAttribute('for', labelFor);
+    const textArea = createElement('textarea');
+    textArea.setAttribute('rows', rows);
+    textArea.setAttribute('name', labelFor);
+    textArea.id = labelFor;
+    parentElement.append(label, textArea);
+}
+
+function newDogInput(input){
+    input.addEventListener('click', function (event){
+        event.preventDefault();
+        const name = document.querySelector('#name').value; 
+        const picture = document.querySelector('#image').value;
+        const bio = document.querySelector('#bio').value;
+        const newDog = {
+            id: 0,
+            name: name,
+            bio: bio,
+            image: picture
+        }
+        data.unshift(newDog);
+        for(let i = 0; i < data.length; i++){
+            data[i].id += 1;
+
+        }
+        dogListContainer.innerHTML = '';
+        const addDogButton = createElementWithText('li', '+');
+        addDogButton.className = 'dogs-list__button dogs-list__button--add';
+        dogListContainer.append(addDogButton);
+        addDogButton.addEventListener('click', displayAddDogForm);
+        data.forEach(dog => {
+            const dogLi = createDogListItem(dog);
+            dogListContainer.append(dogLi);
+        });
+        document.querySelector('.header').append(dogListContainer);
+        document.querySelector('.form').reset();
+    });
+}
+
+function createForm(parentElement){
+    parentElement.innerText = '';
+    const formHeader = createElementWithText('h2', 'Add a new Dog');
+    const formContainer = createElement('form');
+    formContainer.className = 'form';
+    addDogElementToForm(formContainer, 'Dog\'s name', 'name', 'text');
+    addDogElementToForm(formContainer, 'Dog\'s picture', 'image', 'url');
+    addTextAreaElementToForm(formContainer, 'Dog\'s bio', 'bio', 5);
+    const submitInput = createInput(formContainer, 'submit', 'submit');
+    submitInput.setAttribute('value', 'Let\'s add a dog!');
+    submitInput.className = 'form__button';
+    parentElement.append(formHeader, formContainer);
+    newDogInput(submitInput);
+}
+
+function displayAddDogForm(){
+    createForm(dogsMainSection);
+}
 
 data.forEach(dog => {
-    createDogListItem(dogListContainer, dog);
+    const dogLi = createDogListItem(dog);
+    dogListContainer.append(dogLi);
 });
 
-const dog = document.querySelector('.dogs-list');
-dog.addEventListener("click", function (event) {
+dogListContainer.addEventListener("click", function (event) {
     event.preventDefault();
     let dogID = event.target.id;
     let li = event.target.closest('li');
-    if(!li){
+    if(li.className === 'dogs-list__button dogs-list__button--add'){
+        return;
+    }
+    else if(!li){
         return;
     }
     createDogCard(dogsMainSection, data[dogID-1]);
 });
 
-//addEventListener('click', displayAddDogForm);
+
+const addDogButton = document.querySelector('.dogs-list__button--add');
+addDogButton.addEventListener('click', displayAddDogForm);
