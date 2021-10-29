@@ -39,20 +39,11 @@ const addDogButton = document.querySelector('.dogs-list__button--add');
 const dogListContainer = document.querySelector('.dogs-list');
 dogListContainer.className = 'dogs-list';
 
-let dogsAddedToList = 0;
-
 function createDogListItem(parentElement, dogs){
     const dog = createElementWithText('li', dogs.name);
     dog.className = 'dogs-list__button';
     dog.id = dogs.id;
     parentElement.append(dog);
-}
-
-function displayDogInList(){
-    if(dogsAddedToList < data.length){
-        createDogListItem(dogListContainer,data[dogsAddedToList]);
-        dogsAddedToList++;   
-    }
 }
 
 const dogsMainSection = document.querySelector('.main__dog-section');
@@ -83,8 +74,11 @@ function dogBehaviour(parentElement, dog){
     const naughtyDog = createElement('p');
     const italicText = createElementWithText('em', 'Is naughty? ');
     const goodDogButton = createElement('button');
+    goodDogButton.id = 'toggle';
+
     const isNaughty = checkIfGoodDog(dog, goodDogButton);
     naughtyDog.append(italicText, isNaughty);
+
     parentElement.append(naughtyDog, goodDogButton);
 }
 
@@ -93,18 +87,30 @@ function createDogCard(parentElement, dog){
     createDogCredentials(parentElement, dog);
     createDogBio(parentElement, dog);
     dogBehaviour(parentElement, dog);
+    const toggleButton = document.querySelector('#toggle');
+    toggleButton.addEventListener('click', function(event) {
+        event.preventDefault();
+        if(toggleButton.innerText === 'Good Dog!'){
+            toggleButton.innerText = 'Bad Dog!';
+        }
+        else{
+            toggleButton.innerText = 'Good Dog!';
+        }
+    });
 }
 
 function displayDogCard(dog){
     createDogCard(dogsMainSection, dog);
 }
 
+/*
 function displayAddDogForm(){
 
 }
+*/
 
 data.forEach(dog => {
-    displayDogInList();
+    createDogListItem(dogListContainer, dog);
 });
 
 const dog = document.querySelector('.dogs-list');
