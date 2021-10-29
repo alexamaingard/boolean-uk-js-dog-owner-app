@@ -33,7 +33,6 @@ function createElementWithText(tag, text) {
     element.innerText = text;
     return element;
 }
-////////////////////////////////////////////////////
 
 const addDogButton = document.querySelector('.dogs-list__button--add');
 
@@ -86,7 +85,6 @@ function dogBehaviour(parentElement, dog){
     const goodDogButton = createElement('button');
     const isNaughty = checkIfGoodDog(dog, goodDogButton);
     naughtyDog.append(italicText, isNaughty);
-
     parentElement.append(naughtyDog, goodDogButton);
 }
 
@@ -101,27 +99,23 @@ function displayDogCard(dog){
     createDogCard(dogsMainSection, dog);
 }
 
+function displayAddDogForm(){
 
-///////////////////////////////////////////////////////
-addDogButton.addEventListener('click', displayDogInList);
-/*function(){
+}
+
+data.forEach(dog => {
     displayDogInList();
-    let dog1 = dogListContainer.querySelector('#dog-1');
-    return dog1;
 });
-console.log(dog);
-dog.addEventListener('click',displayDogCard);    
-
-//createDogCard(dogsMainSection, data[0]);
-
-//const dogButton = document.querySelector('#1');
-//dogButton.addEventListener('click', displayDogCard);
-*/
 
 const dog = document.querySelector('.dogs-list');
-
 dog.addEventListener("click", function (event) {
     event.preventDefault();
     let dogID = event.target.id;
+    let li = event.target.closest('li');
+    if(!li){
+        return;
+    }
     createDogCard(dogsMainSection, data[dogID-1]);
 });
+
+//addEventListener('click', displayAddDogForm);
